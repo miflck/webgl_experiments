@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>three.js -helloWorld</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body {
+                font-family: Monospace;
+                background-color: #f0f0f0;
+                margin: 0px;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+
+    <body>
+        <script src="build/three.min.js"></script>
+        <script src="js/controls/OrbitControls.js"></script>
+                <script src="fonts/helvetiker_regular.typeface.js"></script>
+
+
+        
+        <script>
+            // Main Code
+            // Set up the scene, camera, and renderer as global variables.
+
+            var scene,
+                camera,
+                renderer;
+                frame=0;
+                
+            var options = {'font' : 'helvetiker','weight' : 'normal', 'style' : 'normal','size' : 10,'curveSegments' : 300};
+
+                var textMesh;
+
+            init();
+            animate();
+
+            //Set up the Scene
+
+            function init() {
+
+                //scene
+              
+                
+                scene = new THREE.Scene();
+                var WIDTH = window.innerWidth,
+                    HEIGHT = window.innerHeight;
+
+                //renderer
+                renderer = new THREE.WebGLRenderer({
+                    antialias : true
+                });
+                renderer.setSize(WIDTH, HEIGHT);
+                document.body.appendChild(renderer.domElement);
+                
+                camera = new THREE.PerspectiveCamera(45,WIDTH/HEIGHT,0.1,20000);
+                camera.position.set(0,20,20);
+                scene.add(camera);
+                
+                window.addEventListener('resize',function(){
+                    
+                    var WIDTH = window.innerWidth,
+                        HEIGHT = window.innerHeight;
+                        
+                        renderer.setSize(WIDTH,HEIGHT);
+                        camera.aspect = WIDTH / HEIGHT;
+                        camera.updateProjectionMatrix();
+                    
+                })
+                
+                 renderer.setClearColor(new THREE.Color(0xFFFFFF));
+                var light = new THREE.PointLight(0xffffff);
+                light.position.set(-100,200,100);
+                scene.add(light);
+                
+                
+                /*var loader =new THREE.JSONLoader();
+                loader.load("models/treehouse_logo.js",function(geometry){
+                    var material =new THREE.MeshLambertMaterial({color:0x55B663});
+                    mesh=new THREE.Mesh(geometry,material);
+                    scene.add(mesh);
+                });
+                */
+                
+                var cubeGeometry = new THREE.CubeGeometry(10, 10, 10);
+                var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x1ec876 });
+                var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+ 
+               cube.rotation.y = Math.PI * 45 / 180;
+               scene.add(cube);
+               
+                console.log(THREE.FontUtils.faces);
+               
+               for(var i=0;i<500;i++){
+               var textShapes = THREE.FontUtils.generateShapes( "Hello World", options );
+               var text = new THREE.ShapeGeometry( textShapes );
+                textMesh = new THREE.Mesh( text, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ) ;
+              scene.add(textMesh);
+              textMesh.position.setX(-100+10*i);
+              textMesh.position.setY(-100+10*i);
+
+                }
+              
+              controls = new THREE.OrbitControls(camera,renderer.domElement);
+              camera.lookAt(cube.position);
+             
+            }
+            
+            
+            
+            
+            function animate(){
+                
+                frame++;
+                var textShapes = THREE.FontUtils.generateShapes( "hello "+frame, options );
+                var text = new THREE.ShapeGeometry( textShapes );
+                   
+                    textMesh.geometry = text;
+                    textMesh.geometry.needsUpdate = true;
+                
+                requestAnimationFrame(animate);
+                
+                renderer.render(scene,camera);
+                controls.update();
+                
+            }
+            
+
+        </script>
+
+    </body>
+</html>
